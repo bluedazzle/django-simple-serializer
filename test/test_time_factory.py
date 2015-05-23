@@ -1,7 +1,7 @@
 import unittest
 import datetime
 
-from src.TimeFormatFactory import TimeFormatFactory
+from dss.TimeFormatFactory import TimeFormatFactory
 
 class TestTimeFormatFactory(unittest.TestCase):
     def setUp(self):

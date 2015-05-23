@@ -53,15 +53,15 @@ def serializer(data, datetime_format='timestamp', output_type='dict', include_at
 
 def get_attr(model_data, deep, time_func):
     attr_list = [f.name for f in model_data._meta.fields]
-        dic_list = {}
-        for itm in attr_list:
-            if isinstance(getattr(model_data, itm), models.Model):
-                if deep:
-                    dic_list[itm] = get_attr(getattr(model_data, itm), deep, time_func)
-            elif isinstance(getattr(model_data, itm), datetime.datetime):
-                dic_list[itm] = time_func(getattr(model_data, itm))
-            else:
-                dic_list[itm] = getattr(model_data, itm)
-        if '_state' in dic_list:
-                dic_list.pop('_state')
-        return dic_list
+    dic_list = {}
+    for itm in attr_list:
+        if isinstance(getattr(model_data, itm), models.Model):
+            if deep:
+                dic_list[itm] = get_attr(getattr(model_data, itm), deep, time_func)
+        elif isinstance(getattr(model_data, itm), datetime.datetime):
+            dic_list[itm] = time_func(getattr(model_data, itm))
+        else:
+            dic_list[itm] = getattr(model_data, itm)
+    if '_state' in dic_list:
+            dic_list.pop('_state')
+    return dic_list

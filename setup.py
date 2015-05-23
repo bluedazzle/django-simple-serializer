@@ -4,28 +4,27 @@ import sys
  
 try:
     from setuptools import setup
-except:
+except ImportError:
     from distutils.core import setup
 
 def read(fname):
     return codecs.open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-
 NAME = "django-simple-serializer"
  
-PACKAGES = ["src", ]
+PACKAGES = ["dss", ]
  
-DESCRIPTION = "Django Simple Serializer is a serializer to help user serialize django data or python list into json\xml\dict data in a simple way."
+DESCRIPTION = "Django Simple Serializer is a serializer to help user serialize django data or python list into json,xml,dict data in a simple way."
  
 LONG_DESCRIPTION = read("README.rst")
  
 KEYWORDS = "django serializer"
- 
+
 AUTHOR = "RaPoSpectre"
  
 AUTHOR_EMAIL = "rapospectre@gmail.com"
  
-URL = ""
+URL = "https://github.com/bluedazzle/django-simple-serializer"
  
 VERSION = "0.0.1"
 
@@ -41,6 +40,11 @@ setup(
         'Programming Language :: Python',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
+    ],
+    install_requires=[
+        'ujson',
+        'xmltodict',
+        'django'
     ],
     keywords = KEYWORDS,
     author = AUTHOR,
