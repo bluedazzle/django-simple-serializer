@@ -69,7 +69,8 @@ Provides the serializer
 
 ####Usage:  
 
-**datetime_format:**
+**datetime_format:**  
+
 |parameters|intro|
 | --------------  | :---: |
 |string|convert datetime into string like "2015-05-10 10:19:22"|
@@ -108,7 +109,8 @@ data:
         }
     ]
 
-**output_type**
+**output_type**  
+
 |parameters|intro|
 | --------------  | :---: |
 |dict|convert data into dict or list|
