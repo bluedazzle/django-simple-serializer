@@ -75,7 +75,7 @@ Provides the serializer
 |string|convert datetime into string like "2015-05-10 10:19:22"|
 |timestamp|convert datetime into timestamp like "1432124420.0"|  
 
-simiple:
+example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -115,7 +115,7 @@ data:
 |json|convert data into json|
 |xml|convert data into xml|  
 
-simiple:
+example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()[0]
@@ -138,7 +138,7 @@ data:
 
 **include_attr**
 
-simiple:
+example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -159,7 +159,7 @@ data:
 
 **except_attr**
 
-simiple:
+example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -192,7 +192,7 @@ data:
         
 **deep**
 
-simiple:
+example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
