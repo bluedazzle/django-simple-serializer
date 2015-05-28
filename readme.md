@@ -18,7 +18,7 @@ For some people, we just want to get serialized data quickly and simply, so i ma
 
 ##Requirements
 
-Django >= 1.4
+Django >= 1.4  
 Python >= 2.6.0
 
 ##Installation
