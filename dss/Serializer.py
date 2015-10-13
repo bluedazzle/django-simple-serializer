@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 from __future__ import unicode_literals
 
 import xmltodict
@@ -19,7 +19,7 @@ except ImportError:
     raise RuntimeError('django is required in django simple serializer')
 
 
-def include_check(include_attr, attr_dict):
+def _include_check(include_attr, attr_dict):
     if include_attr:
         ex_attr_dict = copy.deepcopy(attr_dict)
         attr_dict.clear()
@@ -28,7 +28,7 @@ def include_check(include_attr, attr_dict):
     return attr_dict
 
 
-def exclude_check(exclude_attr, attr_dict):
+def _exclude_check(exclude_attr, attr_dict):
     if exclude_attr:
         for attr in exclude_attr:
             if attr in attr_dict:
@@ -36,20 +36,20 @@ def exclude_check(exclude_attr, attr_dict):
     return attr_dict
 
 
-def get_attr(model_data, time_func, foreign, many):
+def _get_attr(model_data, time_func, foreign, many):
     dic_list = {}
     attr_list = model_data._meta.get_all_field_names()
     for itm in attr_list:
         attribute = getattr(model_data, itm)
         if isinstance(attribute, models.Model):
             if foreign:
-                dic_list[itm] = get_attr(attribute, time_func, foreign, many)
+                dic_list[itm] = _get_attr(attribute, time_func, foreign, many)
         elif isinstance(attribute, manager.Manager):
             if many and not str(itm).endswith('_art'):
                 many_obj = attribute.all()
                 many_list = []
                 for mitm in many_obj:
-                    many_item = get_attr(mitm, time_func, foreign, many)
+                    many_item = _get_attr(mitm, time_func, foreign, many)
                     many_list.append(many_item)
                 dic_list[itm] = many_list
         elif isinstance(attribute, datetime.datetime):
@@ -61,18 +61,18 @@ def get_attr(model_data, time_func, foreign, many):
     return dic_list
 
 
-def data_convert(data, time_func, foreign, many, include_attr, exclude_attr):
+def _data_convert(data, time_func, foreign, many, include_attr, exclude_attr):
     if isinstance(data, models.Model):
-        attr_list = get_attr(data, time_func, foreign, many)
-        include_check(include_attr, attr_list)
-        exclude_check(exclude_attr, attr_list)
+        attr_list = _get_attr(data, time_func, foreign, many)
+        _include_check(include_attr, attr_list)
+        _exclude_check(exclude_attr, attr_list)
         return attr_list
     elif isinstance(data, (QuerySet, Page)):
         result = []
         for itm in data:
             attr_list = get_attr(itm, time_func, foreign, many)
-            include_check(include_attr, attr_list)
-            exclude_check(exclude_attr, attr_list)
+            _include_check(include_attr, attr_list)
+            _exclude_check(exclude_attr, attr_list)
             result.append(copy.copy(attr_list))
         return result
     elif isinstance(data, datetime.datetime):
@@ -81,7 +81,7 @@ def data_convert(data, time_func, foreign, many, include_attr, exclude_attr):
         return data
 
 
-def output_convert(output_type, data):
+def _output_convert(output_type, data):
     output_switch = {'dict': data,
                      'raw': data,
                      'json': json.dumps(data, indent=4),
@@ -93,5 +93,5 @@ def serializer(data, datetime_format='timestamp', output_type='raw', include_att
                foreign=False, many=False, **kwargs):
     foreign = remove_check(**kwargs) or foreign
     time_func = TimeFormatFactory.get_time_func(datetime_format)
-    result = data_convert(data, time_func, foreign, many, include_attr, exclude_attr)
-    return output_convert(output_type, result)
+    result = _data_convert(data, time_func, foreign, many, include_attr, exclude_attr)
+    return _output_convert(output_type, result)

@@ -2,33 +2,37 @@
 
 ---
 
-Django Simple Serializer is a serializer to help user serialize django data or python list into json\xml\dict data in a simple way.
+Django Simple Serializer 是一个可以帮助开发者快速将 Django 数据或者 python data 序列化为 json|xml|raw 数据。
 
-##Why Django Simple Serializer ?
+##为什么要用 Django Simple Serializer ?
 
+对于序列化 Django 数据的解决方案已经有以下几种：  
 
 ###django.core.serializers
- This is a django built-in serializers, it serialzie querset but not a single model object. In addition, if you have DateTimeField into your model, the serializers will not work well(if you'd like using serialized data directly)
+ Django内建序列化器, 它可以序列化Django model query set 但无法序列化单独的Django model数据。除此之外， 如果你的model里含有 DateTimeField , 这个序列化器同样无法使用(如果你想直接使用序列化数据)
 ###QuerySet.values()
- As above, QuerySet.values() also not work well if you have DateTimeField into your model.
+ 和上面一样, QuerySet.values() 同样没法工作如果你的model里有 DateTimeField 字段。
 ###django-rest-framework serializers
- django-rest-framework is a powerful tools to help you build REST API quickly. It has a powerful serializer but you have to use it with create the corresponding model serializer object first. 
+ django-rest-framework 是一个可以帮助你快速构建 REST API 的强力框架。 他拥有完善的序列化器，但在使用之前你不得不指定相应的 model serializer object。 
 ###django simple serializer
-For some people, we just want to get serialized data quickly and simply, so i make a simple way to get serialized data without extra opertion, this is why django simple serializer.
+我们希望可以快速简单的序列化数据, 所以我设计了一种简单的方式可以不用任何额外的配置而将Django data 或者 python data 序列化为相应的数据，这就是为什么我写了 django simple serializer
 
-##Requirements
+----------
+
+##运行需求
+
 
 Django >= 1.4
 
-##Installation
+##安装
 
 Install using pip:
 
     pip install django-simple-serializer
 
-##Working with django simple serializer
-###Serializing objects
-Assuming that we have django models like these:
+##使用 django simple serializer 进行开发
+###序列化Django data
+假设我们有以下Django models：
 
     class Classification(models.Model):
         c_name = models.CharField(max_length=30, unique=True)
@@ -39,7 +43,7 @@ Assuming that we have django models like these:
         content = models.TextField()
         publish = models.BooleanField(default=False)
 
-a simple example with using django models above:
+使用django simple serializer的简单例子：
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -49,34 +53,37 @@ data:
 
     [{'read_count': 0, 'create_time': 1432392456.0, 'modify_time': 1432392456.0, 'sub_caption': u'first', 'comment_count': 0, u'id': 31}, {'read_count': 0, 'create_time': 1432392499.0, 'modify_time': 1432392499.0, 'sub_caption': u'second', 'comment_count': 0, u'id': 32}]
 
-By default, the serializer return a list or a dict(for a single object), you can set the parameter “output_type” to decide the serializer return json/xml/list.
+默认情况下, 序列器会返回一个 list 或者 dict(对于单个model实例), 你可以设置参数 “output_type” 来决定序列器返回 json/xml/list.
 
-##API Guide
+----------
+
+##API 手册
 
 ####dss.Serializer
-Provides the serializer
+提供序列器
 
-*function* serializer(*data, datetime_format='timestamp', output_type='dict', include_attr=None, except_attr=None, deep=False*)
+*function* serializer(*data, datetime_format='timestamp', output_type='raw', include_attr=None, except_attr=None, foreign=False, many=False*)
 
 ####Parameters:
 
-* data(_Required_|(QuerySet, Page, list, django model object))-data to be processed
-* datetime_format(_Optional_|string)-convert datetime into string.default "timestamp"
-* output_type(_Optional_|string)-serialize type. default "dict"
-* include_attr(_Optional_|(list, tuple))-only serialize attributes in include_attr list. default None
-* except_attr(_Optional_|(list, tuple))-exclude attributes in except_attr list. default None
-* deep(_Optional_|bool)-determines if serializer serialize ForeignKeyField. default False
+* data(_Required_|(QuerySet, Page, list, django model object))-待处理数据
+* datetime_format(_Optional_|string)-如果包含 datetime 将 datetime 转换成相应格式.默认为 "timestamp"（时间戳）
+* output_type(_Optional_|string)-serialize type. 默认“raw”原始数据，即返回list或dict
+* include_attr(_Optional_|(list, tuple))-只序列化 include_attr 列表里的字段。默认为 None
+* exclude_attr(_Optional_|(list, tuple))-不序列化 except_attr 列表里的字段。默认为 None
+* foreign(_Optional_|bool)-是否序列化 ForeignKeyField 。include_attr 与 exclude_attr 对   ForeignKeyField 依旧有效。 默认为 False
+* many(_Optional_|bool)-是否序列化 ManyToManyField 。include_attr 与 exclude_attr 对 ManyToManyField 依旧有效 默认为 False
 
-####Usage:  
+####用法:  
 
 **datetime_format:**  
 
 |parameters|intro|
 | --------------  | :---: |
-|string|convert datetime into string like "2015-05-10 10:19:22"|
-|timestamp|convert datetime into timestamp like "1432124420.0"|  
+|string|转换 datetime 为字符串。如： "2015-05-10 10:19:22"|
+|timestamp|转换 datetime 为时间戳。如： "1432124420.0"|  
 
-example:
+例子:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -113,11 +120,12 @@ data:
 
 |parameters|intro|
 | --------------  | :---: |
-|dict|convert data into dict or list|
-|json|convert data into json|
-|xml|convert data into xml|  
+|raw|转换数据为 dict 或者 list|
+|dict|同 raw|  
+|json|转换数据为 json|
+|xml|转换数据为 xml|  
 
-example:
+例子:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()[0]
@@ -140,7 +148,7 @@ data:
 
 **include_attr**
 
-example:
+例子:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -159,9 +167,9 @@ data:
         }
     ]
 
-**except_attr**
+**exclude_attr**
 
-example:
+例子:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -192,13 +200,13 @@ data:
             }
         ]
         
-**deep**
+**foreign**
 
-example:
+例子:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
-    data = serializer(article_list, output_type='json', include_attr=('classification', 'caption', 'create_time', deep=True)
+    data = serializer(article_list, output_type='json', include_attr=('classification', 'caption', 'create_time', foreign=True)
 
 data:  
 
@@ -225,6 +233,275 @@ data:
             }
         ]
 
+**many**
+
+example:
+
+    from dss.Serializer import serializer
+    article_list = Article.objects.all()
+    data = serializer(article_list, output_type='json', include_attr=('classification', 'caption', 'create_time', many=True)
+
+测试数据无 ManyToManyField ，数据格式同上
+
+####dss.Mixin
+提供序列器 Mixin
+
+*class JsonResponseMixin(object)*
+
+####说明:
+
+将普通class based view 转换为返回json数据的class based view，适用于DetailView等
+
+####用法:  
+
+例子:
+
+    # view.py
+    from dss.Mixin import JsonResponseMixin
+    from django.views.generic import DetailView
+    from model import Article
+    
+    class TestView(JsonResponseMixin, DetailView):
+        model = Article
+        datetime_type = 'string'
+        pk_url_kwarg = 'id'
+    
+    
+    # urls.py
+    from view import TestView
+    urlpatterns = patterns('',
+        url(r'^test/(?P<id>(\d)+)/$', TestView.as_view()),
+    )
+        
+访问：`localhost:8000/test/1/`
+
+response:
+
+    {
+        "article": {
+            "classification_id": 5, 
+            "read_count": 0, 
+            "sub_caption": "second", 
+            "comments": [], 
+            "content": "asdfasdfasdf", 
+            "caption": "second", 
+            "comment_count": 0, 
+            "id": 32, 
+            "publish": false
+        }, 
+        "object": {
+            "classification_id": 5, 
+            "read_count": 0, 
+            "sub_caption": "second", 
+            "comments": [], 
+            "content": "asdfasdfasdf", 
+            "caption": "second", 
+            "comment_count": 0, 
+            "id": 32, 
+            "publish": false
+        }, 
+        "view": ""
+    }
+
+
+*class MultipleJsonResponseMixin(JsonResponseMixin):*
+
+####说明: 
+
+将列表类视图转换为返回json数据的类视图，适用于ListView等
+
+####用法:  
+
+例子:
+
+    # view.py
+    from dss.Mixin import MultipleJsonResponseMixin
+    from django.views.generic import ListView
+    from model import Article
+    
+    class TestView(MultipleJsonResponseMixin, ListView):
+        model = Article
+        query_set = Article.objects.all()
+        paginate_by = 1
+        datetime_type = 'string'
+    
+    
+    # urls.py
+    from view import TestView
+    urlpatterns = patterns('',
+        url(r'^test/$', TestView.as_view()),
+    )
+        
+访问：`localhost:8000/test/`
+
+response:
+
+    {
+        "paginator": "", 
+        "article_list": [
+            {
+                "classification_id": 1, 
+                "read_count": 2, 
+                "sub_caption": "first", 
+                "content": "first article", 
+                "caption": "first", 
+                "comment_count": 0, 
+                "publish": false, 
+                "id": 31
+            }, 
+            {
+                "classification_id": 5, 
+                "read_count": 0, 
+                "sub_caption": "", 
+                "content": "testseteset", 
+                "caption": "hehe", 
+                "comment_count": 0, 
+                "publish": false, 
+                "id": 33
+            }, 
+            {
+                "classification_id": 5, 
+                "read_count": 0, 
+                "sub_caption": "second", 
+                "content": "asdfasdfasdf", 
+                "caption": "second", 
+                "comment_count": 0, 
+                "publish": false, 
+                "id": 32
+            }
+        ], 
+        "object_list": [
+            {
+                "classification_id": 1, 
+                "read_count": 2, 
+                "sub_caption": "first", 
+                "content": "first article", 
+                "caption": "first", 
+                "comment_count": 0, 
+                "publish": false, 
+                "id": 31
+            }, 
+            {
+                "classification_id": 5, 
+                "read_count": 0, 
+                "sub_caption": "", 
+                "content": "testseteset", 
+                "caption": "hehe", 
+                "comment_count": 0, 
+                "publish": false, 
+                "id": 33
+            }, 
+            {
+                "classification_id": 5, 
+                "read_count": 0, 
+                "sub_caption": "second", 
+                "content": "asdfasdfasdf", 
+                "caption": "second", 
+                "comment_count": 0, 
+                "publish": false, 
+                "id": 32
+            }
+        ], 
+        "page_obj": {
+            "current": 1, 
+            "next": 2, 
+            "total": 3, 
+            "page_range": [
+                {
+                    "page": 1
+                }, 
+                {
+                    "page": 2
+                }, 
+                {
+                    "page": 3
+                }
+            ], 
+            "previous": null
+        }, 
+        "is_paginated": true, 
+        "view": ""
+    }
+
+*class FormJsonResponseMixin(JsonResponseMixin):*
+
+####说明:
+
+将普通class based view 转换为返回json数据的class based view，适用于CreateView、UpdateView、FormView等
+
+####用法:  
+
+例子:
+
+    # view.py
+    from dss.Mixin import FormJsonResponseMixin
+    from django.views.generic import UpdateView
+    from model import Article
+    
+    class TestView(FormJsonResponseMixin, UpdateView):
+        model = Article
+        datetime_type = 'string'
+        pk_url_kwarg = 'id'
+    
+    
+    # urls.py
+    from view import TestView
+    urlpatterns = patterns('',
+        url(r'^test/(?P<id>(\d)+)/$', TestView.as_view()),
+    )
+        
+访问：`localhost:8000/test/1/`
+
+response:
+
+    {
+        "article": {
+            "classification_id": 5, 
+            "read_count": 0, 
+            "sub_caption": "second", 
+            "content": "asdfasdfasdf", 
+            "caption": "second", 
+            "comment_count": 0, 
+            "id": 32, 
+            "publish": false
+        }, 
+        "form": [
+            {
+                "field": "caption"
+            }, 
+            {
+                "field": "sub_caption"
+            }, 
+            {
+                "field": "read_count"
+            }, 
+            {
+                "field": "comment_count"
+            }, 
+            {
+                "field": "classification"
+            }, 
+            {
+                "field": "content"
+            }, 
+            {
+                "field": "publish"
+            }
+        ], 
+        "object": {
+            "classification_id": 5, 
+            "read_count": 0, 
+            "sub_caption": "second", 
+            "content": "asdfasdfasdf", 
+            "caption": "second", 
+            "comment_count": 0, 
+            "id": 32, 
+            "publish": false
+        }, 
+        "view": ""
+    }
+
+
 #License
 
 Copyright © Tom Christie.
@@ -249,3 +526,8 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+
+
