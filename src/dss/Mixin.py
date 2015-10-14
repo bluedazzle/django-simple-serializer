@@ -1,11 +1,15 @@
 # coding: utf-8
-from __future__ import unicode_literals
 
-from Serializer import serializer
-from TimeFormatFactory import TimeFormatFactory
+from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import datetime
 import json
+from django.core.paginator import EmptyPage
+
+from .Serializer import serializer
+from .TimeFormatFactory import TimeFormatFactory
+
 
 try:
     from django.http import HttpResponse
@@ -15,22 +19,23 @@ except ImportError:
 
 class JsonResponseMixin(object):
     datetime_type = 'string'
+    foreign = False
+    many = False
+    include_attr = None
+    exclude_attr = None
 
     def time_format(self, time_obj):
         time_func = TimeFormatFactory.get_time_func(self.datetime_type)
         return time_func(time_obj)
 
     def context_serialize(self, context):
-        context_dict = {}
-        for k, v in context.iteritems():
-            if isinstance(v, (int, float, str, unicode, bool)):
-                context_dict[k] = v
-            elif isinstance(v, datetime.datetime):
-                context_dict[k] = self.time_format(v)
-            else:
-                context_dict[k] = serializer(v, datetime_format=self.datetime_type, deep=True)
-        return context_dict
-
+        return serializer(data=context,
+                          datetime_format=self.datetime_type,
+                          output_type='raw',
+                          foreign=self.foreign,
+                          many=self.many,
+                          include_attr=self.include_attr,
+                          exclude_attr=self.exclude_attr)
     @staticmethod
     def json_serializer(context):
         return json.dumps(context, indent=4)

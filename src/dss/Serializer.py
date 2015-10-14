@@ -1,13 +1,15 @@
 # coding:utf-8
 from __future__ import unicode_literals
 
-import xmltodict
 import datetime
 import copy
 import json
 
-from TimeFormatFactory import TimeFormatFactory
+import xmltodict
+
+from dss.TimeFormatFactory import TimeFormatFactory
 from Warning import remove_check
+
 
 try:
     from django.db import models
@@ -24,7 +26,8 @@ def _include_check(include_attr, attr_dict):
         ex_attr_dict = copy.deepcopy(attr_dict)
         attr_dict.clear()
         for attr in include_attr:
-            attr_dict[attr] = ex_attr_dict.get(attr, None)
+            if attr in ex_attr_dict:
+                attr_dict[attr] = ex_attr_dict.get(attr, None)
     return attr_dict
 
 
@@ -70,15 +73,27 @@ def _data_convert(data, time_func, foreign, many, include_attr, exclude_attr):
     elif isinstance(data, (QuerySet, Page)):
         result = []
         for itm in data:
-            attr_list = get_attr(itm, time_func, foreign, many)
+            attr_list = _get_attr(itm, time_func, foreign, many)
             _include_check(include_attr, attr_list)
             _exclude_check(exclude_attr, attr_list)
             result.append(copy.copy(attr_list))
         return result
     elif isinstance(data, datetime.datetime):
+        print '===='
+        print data
         return time_func(data)
-    else:
+    elif isinstance(data, (unicode, str, bool, float)):
         return data
+    elif isinstance(data, dict):
+        for k, v in data.iteritems():
+            data[k] = _data_convert(v, time_func, foreign, many, include_attr, exclude_attr)
+        return data
+    elif isinstance(data, list):
+        for i, itm in enumerate(data):
+            data[i] = _data_convert(itm, time_func, foreign, many, include_attr, exclude_attr)
+        return data
+    else:
+        return None
 
 
 def _output_convert(output_type, data):
