@@ -249,11 +249,11 @@ example:
 提供序列器 Mixin
 
     class JsonResponseMixin(object)
-        datetime_type = 'string'        # 输出datetime时间格式。默认为“string”，可选参数相见dss.Serializer.serializer
-        foreign = False                 # 是否序列化ForeignField。默认为False
-        many                            # 是否序列化ManyToManyField。默认为False
-        include_attr                    # 只序列化include_attr包含的属性。默认为None,接受一个包含属性名称的tuple
-        exclude_attr                    # 不序列化exclude_attr包含的属性。默认为None,接受一个包含属性名称的tuple
+        datetime_type = 'string'                # 输出datetime时间格式。默认为“string”，可选参数相见dss.Serializer.serializer
+        foreign = False                         # 是否序列化ForeignField。默认为False
+        many = False                            # 是否序列化ManyToManyField。默认为False
+        include_attr = None                     # 只序列化include_attr包含的属性。默认为None,接受一个包含属性名称的tuple
+        exclude_attr = None                     # 不序列化exclude_attr包含的属性。默认为None,接受一个包含属性名称的tuple
 
 ####说明:
 
@@ -516,12 +516,9 @@ response:
 增加cbv json minxin 类 ；
 增加对ManyToManyField序列化支持。
 
-0.0.2: bug修复
+0.0.2: bug修复。
 
-0.0.1: 第一版
-
-Python 2.7 及以上
-
+0.0.1: 第一版。
 
 #License
 
