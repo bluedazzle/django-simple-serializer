@@ -20,8 +20,7 @@ Django Simple Serializer 是一个可以帮助开发者快速将 Django 数据�
 ----------
 
 ##运行需求
-
-
+=======
 Django >= 1.5
 
 Python 2.7 及以上
