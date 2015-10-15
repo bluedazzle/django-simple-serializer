@@ -1,2 +1,2 @@
-django==1.7.6
+django==1.8.2
 xmltodict==0.9.2
