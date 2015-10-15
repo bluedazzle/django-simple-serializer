@@ -22,7 +22,9 @@ Django Simple Serializer 是一个可以帮助开发者快速将 Django 数据�
 ##运行需求
 
 
-Django >= 1.4
+Django >= 1.5
+
+Python 2.7 及以上
 
 ##安装
 
@@ -500,6 +502,20 @@ response:
         }, 
         "view": ""
     }
+
+##版本历史
+
+###当前版本：1.0.0
+
+1.0.0: 重构代码，修复bug；
+增加cbv json minxin 类 ；
+增加对ManyToManyField序列化支持。
+
+0.0.2: bug修复
+
+0.0.1: 第一版
+
+Python 2.7 及以上
 
 
 #License
