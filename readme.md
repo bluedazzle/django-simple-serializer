@@ -55,7 +55,7 @@ data:
 
     [{'read_count': 0, 'create_time': 1432392456.0, 'modify_time': 1432392456.0, 'sub_caption': u'first', 'comment_count': 0, u'id': 31}, {'read_count': 0, 'create_time': 1432392499.0, 'modify_time': 1432392499.0, 'sub_caption': u'second', 'comment_count': 0, u'id': 32}]
 
-默认情况下, 序列器会返回一个 list 或者 dict(对于单个model实例), 你可以设置参数 “output_type” 来决定序列器返回 json/xml/list.
+默认情况下, 序列器会返回一个 list 或者 dict(对于单个model实例), 你可以设置参数 “output_type” 来决定序列器返回 json/xml/raw.
 
 ----------
 
@@ -122,7 +122,7 @@ data:
 
 |parameters|intro|
 | --------------  | :---: |
-|raw|转换数据为 dict 或者 list|
+|raw|将list或dict中的特殊对象序列化后输出为list或dict|
 |dict|同 raw|  
 |json|转换数据为 json|
 |xml|转换数据为 xml|  
@@ -248,7 +248,12 @@ example:
 ####dss.Mixin
 提供序列器 Mixin
 
-*class JsonResponseMixin(object)*
+    class JsonResponseMixin(object)
+        datetime_type = 'string'        # 输出datetime时间格式。默认为“string”，可选参数相见dss.Serializer.serializer
+        foreign = False                 # 是否序列化ForeignField。默认为False
+        many                            # 是否序列化ManyToManyField。默认为False
+        include_attr                    # 只序列化include_attr包含的属性。默认为None,接受一个包含属性名称的tuple
+        exclude_attr                    # 不序列化exclude_attr包含的属性。默认为None,接受一个包含属性名称的tuple
 
 ####说明:
 
