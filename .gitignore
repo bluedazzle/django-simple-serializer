@@ -7,3 +7,4 @@
 django_simple_serializer.egg-info/
 dist/
 build/
+.coverage
