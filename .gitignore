@@ -4,7 +4,7 @@
 .idea/
 .idea
 .DS_Store
-django_simple_serializer.egg-info/
-dist/
-build/
+src/django_simple_serializer.egg-info/
+src/dist/
+src/build/
 .coverage

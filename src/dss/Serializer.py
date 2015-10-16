@@ -1,5 +1,6 @@
 # coding:utf-8
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import datetime
 import copy
@@ -7,8 +8,8 @@ import json
 
 import xmltodict
 
-from dss.TimeFormatFactory import TimeFormatFactory
-from Warning import remove_check
+from .TimeFormatFactory import TimeFormatFactory
+from .Warning import remove_check
 
 
 try:
