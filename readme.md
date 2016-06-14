@@ -123,7 +123,7 @@ data:
 |raw|将list或dict中的特殊对象序列化后输出为list或dict|
 |dict|同 raw|  
 |json|转换数据为 json|
-|xml|转换数据为 xml|  
+~~|xml|转换数据为 xml|~~  (暂时去除)
 
 例子:
 
@@ -505,18 +505,46 @@ response:
         }, 
         "view": ""
     }
+##2.0.0 新特点:
+增加对额外数据的序列化支持:
+
+当我们想在 model 中加入一些额外的数据并也想被序列化时, 现在可以这样做:
+
+```python
+    def add_extra(article):
+        comments = Comment.objects.filter(article=article)
+        setattr(article, 'comments', comments)
+    
+    articles = Article.objects.all()
+    map(add_extra, articles)
+    result = serializer(articles)
+```
+
+序列化的结果数据中将会包含"comments"哦.
+
+额外加入的数据可以是一个普通的数据类型、 另一个 Django model、 字典、 列表甚至 QuerySet
+
 
 ##版本历史
 
-###当前版本：1.0.0
+###当前版本：2.0.0
 
-1.0.0: 重构代码，修复bug；
+#####2016.6.13 v2.0.0:
+重写 serializer, 优化序列化速度;
+修复已知 bug ;
+增加对所有 Django Field 的支持;
+新特性: 增加 model 额外数据的序列化支持
+
+#####2015.10.15 v1.0.0: 
+重构代码，修复bug；
 增加cbv json minxin 类 ；
 增加对ManyToManyField序列化支持。
 
-0.0.2: bug修复。
+#####2015.10.12: v0.0.2: 
+bug修复。
 
-0.0.1: 第一版。
+#####2015.5.23: v0.0.1: 
+第一版。
 
 #License
 
