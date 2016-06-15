@@ -2,27 +2,29 @@
 
 ---
 
-Django Simple Serializer 是一个可以帮助开发者快速将 Django 数据或者 python data 序列化为 json|xml|raw 数据。
+Django Simple Serializer 是一个可以帮助开发者快速将 Django 数据或者 python data 序列化为 json|raw 数据。
 
 ##为什么要用 Django Simple Serializer ?
 
 对于序列化 Django 数据的解决方案已经有以下几种：  
 
 ###django.core.serializers
- Django内建序列化器, 它可以序列化Django model query set 但无法序列化单独的Django model数据。除此之外， 如果你的model里含有 DateTimeField , 这个序列化器同样无法使用(如果你想直接使用序列化数据)
+ Django内建序列化器, 它可以序列化Django model query set 但无法直接序列化单独的Django model数据。如果你的model里含有混合数据 , 这个序列化器同样无法使用(如果你想直接使用序列化数据). 除此之外, 如果你想直接把序列化数据返回给用户,显然它包含了很多敏感及对用户无用对信息。
 ###QuerySet.values()
- 和上面一样, QuerySet.values() 同样没法工作如果你的model里有 DateTimeField 字段。
+ 和上面一样, QuerySet.values() 同样没法工作如果你的model里有 DateTimeField 或者其他特殊的 Field 以及额外数据。
 ###django-rest-framework serializers
- django-rest-framework 是一个可以帮助你快速构建 REST API 的强力框架。 他拥有完善的序列化器，但在使用之前你不得不指定相应的 model serializer object。 
+ django-rest-framework 是一个可以帮助你快速构建 REST API 的强力框架。 他拥有完善的序列化器，但在使用之前你需要花费一些时间入门, 并学习 cbv 的开发方式, 对于有时间需求的项目显然这不是最好的解决方案。
 ###django simple serializer
-我们希望可以快速简单的序列化数据, 所以我设计了一种简单的方式可以不用任何额外的配置而将Django data 或者 python data 序列化为相应的数据，这就是为什么我写了 django simple serializer
+我希望可以快速简单的序列化数据, 所以我设计了一种可以不用任何额外的配置与学习而将Django data 或者 python data 序列化为相应的数据的简单的方式。 这就是为什么我写了 django simple serializer。
+
+django simple serializer 的实际例子: [我的个人网站后台数据接口](https://github.com/bluedazzle/django-vue.js-blog/blob/master/api/views.py "22") 
 
 ----------
 
 ##运行需求
 Django >= 1.5
 
-Python 2.7 及以上
+Python 2.5 及以上 (暂不支持 python 3)
 
 ##安装
 
@@ -53,7 +55,7 @@ data:
 
     [{'read_count': 0, 'create_time': 1432392456.0, 'modify_time': 1432392456.0, 'sub_caption': u'first', 'comment_count': 0, u'id': 31}, {'read_count': 0, 'create_time': 1432392499.0, 'modify_time': 1432392499.0, 'sub_caption': u'second', 'comment_count': 0, u'id': 32}]
 
-默认情况下, 序列器会返回一个 list 或者 dict(对于单个model实例), 你可以设置参数 “output_type” 来决定序列器返回 json/xml/raw.
+默认情况下, 序列器会返回一个 list 或者 dict(对于单个model实例), 你可以设置参数 “output_type” 来决定序列器返回 json/raw.
 
 ----------
 
@@ -123,28 +125,28 @@ data:
 |raw|将list或dict中的特殊对象序列化后输出为list或dict|
 |dict|同 raw|  
 |json|转换数据为 json|
-~~|xml|转换数据为 xml|~~  (暂时去除)
+
+~~xml 转换数据为 xml~~  (暂时去除)
 
 例子:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()[0]
-    data = serializer(article_list, output_type='xml')
+    data = serializer(article_list, output_type='json')
 
 data:  
 
-    <?xml version="1.0" encoding="utf-8"?>
-    <root>
-        <read_count>0</read_count>
-        <sub_caption>first</sub_caption>
-        <publish>True</publish>
-        <content>first article</content>
-        <caption>first</caption>
-        <comment_count>0</comment_count>
-        <create_time>1432392456.0</create_time>
-        <modify_time>1432392456.0</modify_time>
-        <id>31</id>
-    </root>  
+    {
+            "read_count": 0,
+            "sub_caption": "first",
+            "publish": true,
+            "content": "first article",
+            "caption": "first",
+            "comment_count": 0,
+            "create_time": "2015-05-23 22:47:36",
+            "modify_time": "2015-05-23 22:47:36",
+            "id": 31
+        }
 
 **include_attr**
 
@@ -202,6 +204,8 @@ data:
         
 **foreign**
 
+序列化数据中的 ForeignKeyField 及其子项目
+
 例子:
 
     from dss.Serializer import serializer
@@ -234,6 +238,7 @@ data:
         ]
 
 **many**
+序列化 ManyToManyField
 
 example:
 
@@ -529,21 +534,29 @@ response:
 
 ###当前版本：2.0.0
 
-#####2016.6.13 v2.0.0:
-重写 serializer, 优化序列化速度;
-修复已知 bug ;
-增加对所有 Django Field 的支持;
+#####2016.6.13 v2.0.0: 
+
+重写 serializer, 优化序列化速度; 
+
+修复已知 bug ; 
+
+增加对所有 Django Field 的支持; 
+
 新特性: 增加 model 额外数据的序列化支持
 
 #####2015.10.15 v1.0.0: 
-重构代码，修复bug；
-增加cbv json minxin 类 ；
+重构代码，修复bug； 
+
+增加cbv json minxin 类 ； 
+
 增加对ManyToManyField序列化支持。
 
-#####2015.10.12: v0.0.2: 
+#####2015.10.12: v0.0.2:  
+
 bug修复。
 
 #####2015.5.23: v0.0.1: 
+
 第一版。
 
 #License

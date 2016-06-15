@@ -28,10 +28,10 @@ class TimeFormatFactory(object):
         return time.mktime(datetime_time.timetuple())
 
     @staticmethod
-    def get_time_func(func_type='string', time_format='%Y-%m-%d %H:%M:%S'):
+    def get_time_func(func_type='string'):
         if func_type == 'string':
-            return partial(TimeFormatFactory.datetime_to_string, time_format=time_format)
+            return TimeFormatFactory.datetime_to_string
         elif func_type == 'timestamp':
             return TimeFormatFactory.datetime_to_timestamp
         else:
-            return partial(TimeFormatFactory.datetime_to_string, time_format=time_format)
+            return TimeFormatFactory.datetime_to_string
