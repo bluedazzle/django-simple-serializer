@@ -6,7 +6,6 @@ import datetime
 import json
 
 from decimal import Decimal
-from django.db.models.fields.files import ImageFieldFile, FileField
 
 from .TimeFormatFactory import TimeFormatFactory
 from .Warning import remove_check
@@ -16,6 +15,7 @@ try:
     from django.db.models import manager
     from django.core.paginator import Page
     from django.db.models.query import QuerySet
+    from django.db.models.fields.files import ImageFieldFile, FileField
     import django
 except ImportError:
     raise RuntimeError('django is required in django simple serializer')
@@ -43,6 +43,7 @@ class Serializer(object):
         self.many = many
         self.datetime_format = datetime_format
         self.time_func = TimeFormatFactory.get_time_func(datetime_format)
+        self._dict_check = kwargs.get('dict_check', False)
 
     def check_attr(self, attr):
         if self.exclude_attr and attr in self.exclude_attr:
@@ -77,20 +78,24 @@ class Serializer(object):
         elif isinstance(data, manager.Manager):
             return self.data_inspect(data.all())
         elif isinstance(data, (datetime.datetime, datetime.date, datetime.time)):
-            if isinstance(data, datetime.date):
+            if type(data) is type(datetime.date):
                 return self.time_func(data, time_format='%Y-%m-%d')
-            elif isinstance(data, datetime.time):
+            elif type(data) is type(datetime.time):
                 return self.time_func(data, time_format='%H:%M:%S')
-            return self.time_func(data)
+            return self.time_func(data, time_format='%Y-%m-%d %H:%M:%S')
         elif isinstance(data, (ImageFieldFile, FileField)):
             return data.name
         elif isinstance(data, Decimal):
             return float(data)
         elif isinstance(data, dict):
             obj_dict = {}
-            for k, v in data.iteritems():
-                if self.check_attr(k):
+            if self._dict_check:
+                for k, v in data.iteritems():
                     obj_dict[k] = self.data_inspect(v)
+            else:
+                for k, v in data.iteritems():
+                    if self.check_attr(k):
+                        obj_dict[k] = self.data_inspect(v)
             return obj_dict
         elif isinstance(data, (unicode, str, bool, float, int, long)):
             return data

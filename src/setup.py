@@ -26,7 +26,7 @@ AUTHOR_EMAIL = "rapospectre@gmail.com"
  
 URL = "https://github.com/bluedazzle/django-simple-serializer"
  
-VERSION = "2.0.0"
+VERSION = "2.0.2"
 
 LICENSE = "MIT"
 
@@ -40,10 +40,6 @@ setup(
         'Programming Language :: Python',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
-    ],
-    install_requires=[
-        'Django>=1.5',
-        'xmltodict'
     ],
     keywords = KEYWORDS,
     author = AUTHOR,

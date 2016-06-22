@@ -532,7 +532,19 @@ response:
 
 ##版本历史
 
-###当前版本：2.0.0
+###当前版本：2.0.2 
+
+#####2016.6.13 v2.0.2:
+
+修复 cbv 下, 当有 include_attr 参数时, MultipleJsonResponseMixin 中所有数据被过滤的问题 
+
+修复 datetime.datetime 和 datetime.time 都被格式化为 datetime.date 数据 
+
+优化代码
+
+#####2016.6.13 v2.0.1:
+
+修复发布 bug
 
 #####2016.6.13 v2.0.0: 
 
