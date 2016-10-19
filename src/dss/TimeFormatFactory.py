@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import time
+import datetime
 from functools import partial
 
 try:
@@ -15,16 +16,22 @@ class TimeFormatFactory(object):
 
     @staticmethod
     def datetime_to_string(datetime_time, time_format='%Y-%m-%d %H:%M:%S'):
-        if datetime_time.tzinfo is None:
-            return datetime_time.strftime(time_format)
-        datetime_time = datetime_time.astimezone(timezone.get_current_timezone())
+        if isinstance(datetime_time, datetime.datetime):
+            if not datetime_time.tzinfo:
+                datetime_time = datetime_time.astimezone(timezone.get_current_timezone())
+                return datetime_time.strftime(time_format)
+        elif isinstance(datetime_time, datetime.time):
+            time_format = '%H:%M:%S'
+        elif isinstance(datetime_time, datetime.date):
+            time_format = '%Y-%m-%d'
         return datetime_time.strftime(time_format)
 
     @staticmethod
     def datetime_to_timestamp(datetime_time, time_format=None):
-        if datetime_time.tzinfo is None:
-            return time.mktime(datetime_time.timetuple())
-        datetime_time = datetime_time.astimezone(timezone.get_current_timezone())
+        if isinstance(datetime_time, datetime.datetime):
+            if not datetime_time.tzinfo:
+                datetime_time = datetime_time.astimezone(timezone.get_current_timezone())
+                return time.mktime(datetime_time.timetuple())
         return time.mktime(datetime_time.timetuple())
 
     @staticmethod

@@ -78,11 +78,7 @@ class Serializer(object):
         elif isinstance(data, manager.Manager):
             return self.data_inspect(data.all())
         elif isinstance(data, (datetime.datetime, datetime.date, datetime.time)):
-            if type(data) is type(datetime.date):
-                return self.time_func(data, time_format='%Y-%m-%d')
-            elif type(data) is type(datetime.time):
-                return self.time_func(data, time_format='%H:%M:%S')
-            return self.time_func(data, time_format='%Y-%m-%d %H:%M:%S')
+            return self.time_func(data)
         elif isinstance(data, (ImageFieldFile, FileField)):
             return data.name
         elif isinstance(data, Decimal):
