@@ -9,7 +9,6 @@ from django.core.paginator import EmptyPage
 from .Serializer import serializer
 from .TimeFormatFactory import TimeFormatFactory
 
-
 try:
     from django.http import HttpResponse
 except ImportError:
@@ -45,6 +44,7 @@ class JsonResponseMixin(object):
                           include_attr=self.include_attr,
                           exclude_attr=self.exclude_attr,
                           dict_check=True)
+
     @staticmethod
     def json_serializer(context):
         return json.dumps(context, indent=4)
