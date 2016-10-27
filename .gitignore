@@ -8,3 +8,4 @@ src/django_simple_serializer.egg-info/
 src/dist/
 src/build/
 .coverage
+fabfile.py

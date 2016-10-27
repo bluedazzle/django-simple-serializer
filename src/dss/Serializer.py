@@ -8,7 +8,6 @@ import json
 from decimal import Decimal
 
 from .TimeFormatFactory import TimeFormatFactory
-from .Warning import remove_check
 
 try:
     from django.db import models
