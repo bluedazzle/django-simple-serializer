@@ -584,7 +584,7 @@ bug修复。
 
 #License
 
-Copyright © Tom Christie.
+Copyright © RaPoSpectre.
 
 All rights reserved.
 
