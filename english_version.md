@@ -2,41 +2,34 @@
 
 ---
 
-[English Doc][1]
+Django Simple Serializer is a serializer to help user serialize django data or python list into json\xml\dict data in a simple way.
 
-Django Simple Serializer 是一个可以帮助开发者快速将 Django 数据或者 python data 序列化为 json|raw 数据。
+##Why Django Simple Serializer ?
 
-##为什么要用 Django Simple Serializer ?
-
-对于序列化 Django 数据的解决方案已经有以下几种：  
 
 ###django.core.serializers
- Django内建序列化器, 它可以序列化Django model query set 但无法直接序列化单独的Django model数据。如果你的model里含有混合数据 , 这个序列化器同样无法使用(如果你想直接使用序列化数据). 除此之外, 如果你想直接把序列化数据返回给用户,显然它包含了很多敏感及对用户无用对信息。
+ This is a django built-in serializers, it serialzie querset but not a single model object. In addition, if you have DateTimeField into your model, the serializers will not work well(if you'd like using serialized data directly)
 ###QuerySet.values()
- 和上面一样, QuerySet.values() 同样没法工作如果你的model里有 DateTimeField 或者其他特殊的 Field 以及额外数据。
+ As above, QuerySet.values() also not work well if you have DateTimeField into your model.
 ###django-rest-framework serializers
- django-rest-framework 是一个可以帮助你快速构建 REST API 的强力框架。 他拥有完善的序列化器，但在使用之前你需要花费一些时间入门, 并学习 cbv 的开发方式, 对于有时间需求的项目显然这不是最好的解决方案。
+ django-rest-framework is a powerful tools to help you build REST API quickly. It has a powerful serializer but you have to use it with create the corresponding model serializer object first. 
 ###django simple serializer
-我希望可以快速简单的序列化数据, 所以我设计了一种可以不用任何额外的配置与学习而将Django data 或者 python data 序列化为相应的数据的简单的方式。 这就是为什么我写了 django simple serializer。
+For some people, we just want to get serialized data quickly and simply, so i make a simple way to get serialized data without extra opertion, this is why django simple serializer.
 
-django simple serializer 的实际例子: [我的个人网站后台数据接口](https://github.com/bluedazzle/django-vue.js-blog/blob/master/api/views.py "22") 
+##Requirements
 
-----------
+Django >= 1.4  
+Python >= 2.6.0
 
-##运行需求
-Django >= 1.5
-
-Python 2.5 及以上 (暂不支持 python 3)
-
-##安装
+##Installation
 
 Install using pip:
 
     pip install django-simple-serializer
 
-##使用 django simple serializer 进行开发
-###序列化Django data
-假设我们有以下Django models：
+##Working with django simple serializer
+###Serializing objects
+Assuming that we have django models like these:
 
     class Classification(models.Model):
         c_name = models.CharField(max_length=30, unique=True)
@@ -47,7 +40,7 @@ Install using pip:
         content = models.TextField()
         publish = models.BooleanField(default=False)
 
-使用django simple serializer的简单例子：
+a simple example with using django models above:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -57,37 +50,35 @@ data:
 
     [{'read_count': 0, 'create_time': 1432392456.0, 'modify_time': 1432392456.0, 'sub_caption': u'first', 'comment_count': 0, u'id': 31}, {'read_count': 0, 'create_time': 1432392499.0, 'modify_time': 1432392499.0, 'sub_caption': u'second', 'comment_count': 0, u'id': 32}]
 
-默认情况下, 序列器会返回一个 list 或者 dict(对于单个model实例), 你可以设置参数 “output_type” 来决定序列器返回 json/raw.
+By default, the serializer return a list or a dict(for a single object), you can set the parameter “output_type” to decide the serializer return json/xml/list.
 
-----------
-
-##API 手册
+##API Guide
 
 ####dss.Serializer
-提供序列器
+Provides the serializer
 
-*function* serializer(*data, datetime_format='timestamp', output_type='raw', include_attr=None, except_attr=None, foreign=False, many=False*)
+*function* serializer(*data, datetime_format='timestamp', output_type='dict', include_attr=None, except_attr=None, deep=False*)
 
 ####Parameters:
 
-* data(_Required_|(QuerySet, Page, list, django model object))-待处理数据
-* datetime_format(_Optional_|string)-如果包含 datetime 将 datetime 转换成相应格式.默认为 "timestamp"（时间戳）
-* output_type(_Optional_|string)-serialize type. 默认“raw”原始数据，即返回list或dict
-* include_attr(_Optional_|(list, tuple))-只序列化 include_attr 列表里的字段。默认为 None
-* exclude_attr(_Optional_|(list, tuple))-不序列化 except_attr 列表里的字段。默认为 None
-* foreign(_Optional_|bool)-是否序列化 ForeignKeyField 。include_attr 与 exclude_attr 对   ForeignKeyField 依旧有效。 默认为 False
-* many(_Optional_|bool)-是否序列化 ManyToManyField 。include_attr 与 exclude_attr 对 ManyToManyField 依旧有效 默认为 False
+* data(_Required_|(QuerySet, Page, list, django model object))-data to be processed
+* datetime_format(_Optional_|string)-convert datetime into string.default "timestamp"
+* output_type(_Optional_|string)-serialize type. default "dict"
+* include_attr(_Optional_|(list, tuple))-only serialize attributes in include_attr list. default None
+* except_attr(_Optional_|(list, tuple))-exclude attributes in except_attr list. default None
+* foreign(_Optional_|bool)-determines if serializer serialize ForeignKeyField. default False
+* many(_Optional_|bool)-determines if serializer serialize ManyToManyField. default False
 
-####用法:  
+####Usage:  
 
 **datetime_format:**  
 
 |parameters|intro|
 | --------------  | :---: |
-|string|转换 datetime 为字符串。如： "2015-05-10 10:19:22"|
-|timestamp|转换 datetime 为时间戳。如： "1432124420.0"|  
+|string|convert datetime into string like "2015-05-10 10:19:22"|
+|timestamp|convert datetime into timestamp like "1432124420.0"|  
 
-例子:
+example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -124,35 +115,34 @@ data:
 
 |parameters|intro|
 | --------------  | :---: |
-|raw|将list或dict中的特殊对象序列化后输出为list或dict|
-|dict|同 raw|  
-|json|转换数据为 json|
+|dict|convert data into dict or list|
+|json|convert data into json|
+|xml|convert data into xml|  
 
-~~xml 转换数据为 xml~~  (暂时去除)
-
-例子:
+example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()[0]
-    data = serializer(article_list, output_type='json')
+    data = serializer(article_list, output_type='xml')
 
 data:  
 
-    {
-            "read_count": 0,
-            "sub_caption": "first",
-            "publish": true,
-            "content": "first article",
-            "caption": "first",
-            "comment_count": 0,
-            "create_time": "2015-05-23 22:47:36",
-            "modify_time": "2015-05-23 22:47:36",
-            "id": 31
-        }
+    <?xml version="1.0" encoding="utf-8"?>
+    <root>
+        <read_count>0</read_count>
+        <sub_caption>first</sub_caption>
+        <publish>True</publish>
+        <content>first article</content>
+        <caption>first</caption>
+        <comment_count>0</comment_count>
+        <create_time>1432392456.0</create_time>
+        <modify_time>1432392456.0</modify_time>
+        <id>31</id>
+    </root>  
 
 **include_attr**
 
-例子:
+example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -171,9 +161,9 @@ data:
         }
     ]
 
-**exclude_attr**
+**except_attr**
 
-例子:
+example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -206,7 +196,7 @@ data:
         
 **foreign**
 
-序列化数据中的 ForeignKeyField 及其子项目
+Serialize ForeignKeyField and its sub item
 
 例子:
 
@@ -240,7 +230,7 @@ data:
         ]
 
 **many**
-序列化 ManyToManyField
+Serialize ManyToManyField
 
 example:
 
@@ -248,23 +238,23 @@ example:
     article_list = Article.objects.all()
     data = serializer(article_list, output_type='json', include_attr=('classification', 'caption', 'create_time', many=True)
 
-测试数据无 ManyToManyField ，数据格式同上
+No test data have ManyToManyField ，data format same as above
 
 ####dss.Mixin
-提供序列器 Mixin
+Serialize Mixin
 
     class JsonResponseMixin(object)
-        datetime_type = 'string'                # 输出datetime时间格式。默认为“string”，可选参数相见dss.Serializer.serializer
-        foreign = False                         # 是否序列化ForeignField。默认为False
-        many = False                            # 是否序列化ManyToManyField。默认为False
-        include_attr = None                     # 只序列化include_attr包含的属性。默认为None,接受一个包含属性名称的tuple
-        exclude_attr = None                     # 不序列化exclude_attr包含的属性。默认为None,接受一个包含属性名称的tuple
+        datetime_type = 'string'                # Output datetime format. Default is “string”，other parameters see dss.Serializer.serializer
+        foreign = False                         # If serialize ForeignField。Default is False
+        many = False                            # If serialize ManyToManyField。Default is False
+        include_attr = None                     # Only serialize the  attrs which in include_attr list。Default is None, accept a tuple contains attrs
+        exclude_attr = None                     # serialize exclude attrs in exclude_attr list。Default is None, accept a tuple contains attrs
 
-####说明:
+####Statement:
 
-将普通class based view 转换为返回json数据的class based view，适用于DetailView等
+Converts class based view into return json class based view，uses for DetailView and so on.
 
-####用法:  
+####Usage:  
 
 例子:
 
@@ -285,7 +275,7 @@ example:
         url(r'^test/(?P<id>(\d)+)/$', TestView.as_view()),
     )
         
-访问：`localhost:8000/test/1/`
+access：`localhost:8000/test/1/`
 
 response:
 
@@ -318,13 +308,13 @@ response:
 
 *class MultipleJsonResponseMixin(JsonResponseMixin):*
 
-####说明: 
+####Statement: 
 
-将列表类视图转换为返回json数据的类视图，适用于ListView等
+Mixin for ListView to converts it return data into json/xml.
 
-####用法:  
+####Usage:  
 
-例子:
+example:
 
     # view.py
     from dss.Mixin import MultipleJsonResponseMixin
@@ -344,7 +334,7 @@ response:
         url(r'^test/$', TestView.as_view()),
     )
         
-访问：`localhost:8000/test/`
+access：`localhost:8000/test/`
 
 response:
 
@@ -439,7 +429,7 @@ response:
 
 ####说明:
 
-将普通class based view 转换为返回json数据的class based view，适用于CreateView、UpdateView、FormView等
+Converts class based view into a return json data class based view，use for CreateView、UpdateView、FormView and so on.
 
 ####用法:  
 
@@ -462,7 +452,7 @@ response:
         url(r'^test/(?P<id>(\d)+)/$', TestView.as_view()),
     )
         
-访问：`localhost:8000/test/1/`
+access：`localhost:8000/test/1/`
 
 response:
 
@@ -512,10 +502,10 @@ response:
         }, 
         "view": ""
     }
-##2.0.0 新特点:
-增加对额外数据的序列化支持:
+##2.0.0 New Feature:
+Add serialize extra data:
 
-当我们想在 model 中加入一些额外的数据并也想被序列化时, 现在可以这样做:
+When we want to add extra data in model and serialize it, we can do like this:
 
 ```python
     def add_extra(article):
@@ -527,62 +517,62 @@ response:
     result = serializer(articles)
 ```
 
-序列化的结果数据中将会包含"comments"哦.
+The result will in "comments".
 
-额外加入的数据可以是一个普通的数据类型、 另一个 Django model、 字典、 列表甚至 QuerySet
+The extra data can be a normal data type data, an other Django model, dict, list even a QuerySet.
 
 
-##版本历史
+##History
 
-###当前版本：2.0.4
+###Current Version：2.0.4
 
 #####2016.10.27 v2.0.4:
 
-修复 issue #2
+Fix issue #2.
  
 #####2016.10.19 v2.0.3:
-优化代码
+Optimize code.
 
-修复已知 bug
+Fix known bugs.
 
-修复 issue #1
+Fix issue #1
 
 #####2016.6.22 v2.0.2:
 
-修复 cbv 下, 当有 include_attr 参数时, MultipleJsonResponseMixin 中所有数据被过滤的问题 
+Fix when dev in cbv, if include_attr is not None, MultipleJsonResponseMixin will filter all data.
 
-修复 datetime.datetime 和 datetime.time 都被格式化为 datetime.date 数据 
+Fix datetime.datetime and datetime.time was formated as datetime.date  
 
-优化代码
+Optimize code.
 
 #####2016.6.14 v2.0.1:
 
-修复发布 bug
+fix known bugs.
 
 #####2016.6.13 v2.0.0: 
 
-重写 serializer, 优化序列化速度; 
+Rewrite serializer, optimizes serialize time. 
 
-修复已知 bug ; 
+Fix known bugs. 
 
-增加对所有 Django Field 的支持; 
+Add serialize support for all Django Field. 
 
-新特性: 增加 model 额外数据的序列化支持
+New feature: add serialize extra data in model.
 
 #####2015.10.15 v1.0.0: 
-重构代码，修复bug； 
+Refactoring code. 
 
-增加cbv json minxin 类 ； 
+add cbv json minxin class. 
 
-增加对ManyToManyField序列化支持。
+add serialize support for ManyToManyField.
 
 #####2015.10.12: v0.0.2:  
 
-bug修复。
+Fix bugs.
 
 #####2015.5.23: v0.0.1: 
 
-第一版。
+First version.
 
 #License
 
@@ -608,9 +598,3 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-[1]: https://github.com/bluedazzle/django-simple-serializer/blob/master/english_version.md
-
-
-
-
