@@ -66,7 +66,7 @@ data:
 ####dss.Serializer
 提供序列器
 
-*function* serializer(*data, datetime_format='timestamp', output_type='raw', include_attr=None, except_attr=None, foreign=False, many=False*)
+*function* serializer(*data, datetime_format='timestamp', output_type='raw', include_attr=None, exclude_attr=None, foreign=False, many=False*)
 
 ####Parameters:
 
@@ -74,7 +74,7 @@ data:
 * datetime_format(_Optional_|string)-如果包含 datetime 将 datetime 转换成相应格式.默认为 "timestamp"（时间戳）
 * output_type(_Optional_|string)-serialize type. 默认“raw”原始数据，即返回list或dict
 * include_attr(_Optional_|(list, tuple))-只序列化 include_attr 列表里的字段。默认为 None
-* exclude_attr(_Optional_|(list, tuple))-不序列化 except_attr 列表里的字段。默认为 None
+* exclude_attr(_Optional_|(list, tuple))-不序列化 exclude_attr 列表里的字段。默认为 None
 * foreign(_Optional_|bool)-是否序列化 ForeignKeyField 。include_attr 与 exclude_attr 对   ForeignKeyField 依旧有效。 默认为 False
 * many(_Optional_|bool)-是否序列化 ManyToManyField 。include_attr 与 exclude_attr 对 ManyToManyField 依旧有效 默认为 False
 
@@ -177,7 +177,7 @@ data:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
-    data = serializer(article_list, output_type='json', except_attr=('content',))
+    data = serializer(article_list, output_type='json', exclude_attr=('content',))
 
 data:  
 
