@@ -57,7 +57,7 @@ By default, the serializer return a list or a dict(for a single object), you can
 ####dss.Serializer
 Provides the serializer
 
-*function* serializer(*data, datetime_format='timestamp', output_type='dict', include_attr=None, except_attr=None, deep=False*)
+*function* serializer(*data, datetime_format='timestamp', output_type='dict', include_attr=None, exclude_attr=None, deep=False*)
 
 ####Parameters:
 
@@ -65,7 +65,7 @@ Provides the serializer
 * datetime_format(_Optional_|string)-convert datetime into string.default "timestamp"
 * output_type(_Optional_|string)-serialize type. default "dict"
 * include_attr(_Optional_|(list, tuple))-only serialize attributes in include_attr list. default None
-* except_attr(_Optional_|(list, tuple))-exclude attributes in except_attr list. default None
+* exclude_attr(_Optional_|(list, tuple))-exclude attributes in exclude_attr list. default None
 * foreign(_Optional_|bool)-determines if serializer serialize ForeignKeyField. default False
 * many(_Optional_|bool)-determines if serializer serialize ManyToManyField. default False
 
@@ -161,13 +161,13 @@ data:
         }
     ]
 
-**except_attr**
+**exclude_attr**
 
 example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
-    data = serializer(article_list, output_type='json', except_attr=('content',))
+    data = serializer(article_list, output_type='json', exclude_attr=('content',))
 
 data:  
 
