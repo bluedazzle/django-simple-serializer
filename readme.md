@@ -66,7 +66,7 @@ data:
 ####dss.Serializer
 提供序列器
 
-*function* serializer(*data, datetime_format='timestamp', output_type='raw', include_attr=None, exclude_attr=None, foreign=False, many=False*)
+*function* serializer(*data, datetime_format='timestamp', output_type='raw', include_attr=None, exclude_attr=None, foreign=False, many=False, through=True*)
 
 ####Parameters:
 
@@ -77,6 +77,7 @@ data:
 * exclude_attr(_Optional_|(list, tuple))-不序列化 exclude_attr 列表里的字段。默认为 None
 * foreign(_Optional_|bool)-是否序列化 ForeignKeyField 。include_attr 与 exclude_attr 对   ForeignKeyField 依旧有效。 默认为 False
 * many(_Optional_|bool)-是否序列化 ManyToManyField 。include_attr 与 exclude_attr 对 ManyToManyField 依旧有效 默认为 False
+* through(_Optional_|bool)-是否序列化 ManyToManyField 中 through 属性数据 默认为 True
 
 ####用法:  
 
@@ -259,6 +260,7 @@ example:
         many = False                            # 是否序列化ManyToManyField。默认为False
         include_attr = None                     # 只序列化include_attr包含的属性。默认为None,接受一个包含属性名称的tuple
         exclude_attr = None                     # 不序列化exclude_attr包含的属性。默认为None,接受一个包含属性名称的tuple
+        through = True                          # 序列化 through 属性数据
 
 ####说明:
 
@@ -534,7 +536,11 @@ response:
 
 ##版本历史
 
-###当前版本：2.0.4
+###当前版本：2.0.5
+
+#####2017.02.25 v2.0.5: 
+
+增加对 trough 属性支持
 
 #####2016.10.27 v2.0.4:
 

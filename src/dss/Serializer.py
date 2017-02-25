@@ -8,6 +8,7 @@ import json
 from decimal import Decimal
 
 from .TimeFormatFactory import TimeFormatFactory
+from .Warning import remove_check
 
 try:
     from django.db import models
@@ -29,9 +30,10 @@ class Serializer(object):
     datetime_format = 'timestamp'
     foreign = False
     many = False
+    through = True
 
     def __init__(self, data, datetime_format='timestamp', output_type='raw', include_attr=None, exclude_attr=None,
-                 foreign=False, many=False, *args, **kwargs):
+                 foreign=False, many=False, through=True, *args, **kwargs):
         if include_attr:
             self.include_attr = include_attr
         if exclude_attr:
@@ -40,6 +42,9 @@ class Serializer(object):
         self.output_type = output_type
         self.foreign = foreign
         self.many = many
+        self.through = through
+        self.through_fields = []
+        self.source_field = None
         self.datetime_format = datetime_format
         self.time_func = TimeFormatFactory.get_time_func(datetime_format)
         self._dict_check = kwargs.get('dict_check', False)
@@ -51,11 +56,15 @@ class Serializer(object):
             return False
         return True
 
-    def data_inspect(self, data):
+    def data_inspect(self, data, extra=None):
         if isinstance(data, (QuerySet, Page, list)):
             convert_data = []
-            for obj in data:
-                convert_data.append(self.data_inspect(obj))
+            if extra:
+                for i, obj in enumerate(data):
+                    convert_data.append(self.data_inspect(obj, extra.get(**{self.through_fields[0]: obj, self.through_fields[1]: self.source_field})))
+            else:
+                for obj in data:
+                    convert_data.append(self.data_inspect(obj))
             return convert_data
         elif isinstance(data, models.Model):
             obj_dict = {}
@@ -73,9 +82,25 @@ class Serializer(object):
             for k, v in data.__dict__.iteritems():
                 if not unicode(k).startswith('_') and k not in obj_dict.keys() and self.check_attr(k):
                     obj_dict[k] = self.data_inspect(v)
+            if extra:
+                for field in extra._meta.concrete_model._meta.local_fields:
+                    if field.name not in obj_dict.keys() and field.name not in self.through_fields:
+                        if field.rel is None:
+                            if self.check_attr(field.name) and hasattr(extra, field.name):
+                                obj_dict[field.name] = self.data_inspect(getattr(extra, field.name))
+                        else:
+                            if self.check_attr(field.name) and self.foreign:
+                                obj_dict[field.name] = self.data_inspect(getattr(extra, field.name))
             return obj_dict
         elif isinstance(data, manager.Manager):
-            return self.data_inspect(data.all())
+            through_list = data.through._meta.concrete_model._meta.local_fields
+            through_data = data.through._default_manager
+            self.through_fields = [data.target_field.name, data.source_field.name]
+            self.source_field = data.instance
+            if len(through_list) > 3 and self.through:
+                return self.data_inspect(data.all(), through_data)
+            else:
+                return self.data_inspect(data.all())
         elif isinstance(data, (datetime.datetime, datetime.date, datetime.time)):
             return self.time_func(data)
         elif isinstance(data, (ImageFieldFile, FileField)):
@@ -112,7 +137,7 @@ class Serializer(object):
 
 
 def serializer(data, datetime_format='timestamp', output_type='raw', include_attr=None, exclude_attr=None,
-               foreign=False, many=False, *args, **kwargs):
+               foreign=False, many=False, through=True, *args, **kwargs):
     s = Serializer(data, datetime_format, output_type, include_attr, exclude_attr,
-                   foreign, many, *args, **kwargs)
+                   foreign, many, through, *args, **kwargs)
     return s()
