@@ -3,6 +3,12 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 
+import sys
+PY2 = True
+if sys.version < '3':
+    from future.builtins import str, int
+    PY2 = False
+
 import json
 from django.core.paginator import EmptyPage
 
@@ -61,7 +67,7 @@ class FormJsonResponseMixin(JsonResponseMixin):
         form = context.get('form', None)
         if form:
             for itm in form.fields:
-                f_dict = {'field': unicode(itm)}
+                f_dict = {'field': str(itm)}
                 form_list.append(f_dict)
         context_dict = super(FormJsonResponseMixin, self).context_serialize(context, *args, **kwargs)
         context_dict['form'] = form_list

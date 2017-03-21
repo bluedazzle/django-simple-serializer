@@ -1,6 +1,12 @@
 # coding: utf-8
-
 from __future__ import unicode_literals
+import sys
+
+PY2 = True
+if sys.version < '3':
+    from future.builtins import str, int
+
+    PY2 = False
 
 import datetime
 import json
@@ -8,7 +14,6 @@ import json
 from decimal import Decimal
 
 from .TimeFormatFactory import TimeFormatFactory
-from .Warning import remove_check
 
 try:
     from django.db import models
@@ -16,7 +21,6 @@ try:
     from django.core.paginator import Page
     from django.db.models.query import QuerySet
     from django.db.models.fields.files import ImageFieldFile, FileField
-    import django
 except ImportError:
     raise RuntimeError('django is required in django simple serializer')
 
@@ -61,7 +65,8 @@ class Serializer(object):
             convert_data = []
             if extra:
                 for i, obj in enumerate(data):
-                    convert_data.append(self.data_inspect(obj, extra.get(**{self.through_fields[0]: obj, self.through_fields[1]: self.source_field})))
+                    convert_data.append(self.data_inspect(obj, extra.get(
+                        **{self.through_fields[0]: obj, self.through_fields[1]: self.source_field})))
             else:
                 for obj in data:
                     convert_data.append(self.data_inspect(obj))
@@ -79,8 +84,8 @@ class Serializer(object):
             for field in concrete_model._meta.many_to_many:
                 if self.check_attr(field.name) and self.many:
                     obj_dict[field.name] = self.data_inspect(getattr(data, field.name))
-            for k, v in data.__dict__.iteritems():
-                if not unicode(k).startswith('_') and k not in obj_dict.keys() and self.check_attr(k):
+            for k, v in data.__dict__.items():
+                if not str(k).startswith('_') and k not in obj_dict.keys() and self.check_attr(k):
                     obj_dict[k] = self.data_inspect(v)
             if extra:
                 for field in extra._meta.concrete_model._meta.local_fields:
@@ -110,14 +115,14 @@ class Serializer(object):
         elif isinstance(data, dict):
             obj_dict = {}
             if self._dict_check:
-                for k, v in data.iteritems():
+                for k, v in data.items():
                     obj_dict[k] = self.data_inspect(v)
             else:
-                for k, v in data.iteritems():
+                for k, v in data.items():
                     if self.check_attr(k):
                         obj_dict[k] = self.data_inspect(v)
             return obj_dict
-        elif isinstance(data, (unicode, str, bool, float, int, long)):
+        elif isinstance(data, (str, bool, float, int)):
             return data
         else:
             return None
