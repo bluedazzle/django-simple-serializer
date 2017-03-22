@@ -5,7 +5,6 @@ import sys
 PY2 = True
 if sys.version < '3':
     from future.builtins import str, int
-
     PY2 = False
 
 import datetime

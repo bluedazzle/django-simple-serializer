@@ -4,31 +4,40 @@
 
 Django Simple Serializer is a serializer to help user serialize django data or python list into json\xml\dict data in a simple way.
 
-##Why Django Simple Serializer ?
+## Why Django Simple Serializer ?
 
 
-###django.core.serializers
+### django.core.serializers
  This is a django built-in serializers, it serialzie querset but not a single model object. In addition, if you have DateTimeField into your model, the serializers will not work well(if you'd like using serialized data directly)
-###QuerySet.values()
+### QuerySet.values()
  As above, QuerySet.values() also not work well if you have DateTimeField into your model.
-###django-rest-framework serializers
+### django-rest-framework serializers
  django-rest-framework is a powerful tools to help you build REST API quickly. It has a powerful serializer but you have to use it with create the corresponding model serializer object first. 
-###django simple serializer
+### django simple serializer
 For some people, we just want to get serialized data quickly and simply, so i make a simple way to get serialized data without extra opertion, this is why django simple serializer.
 
-##Requirements
+## Requirements
 
-Django >= 1.4  
-Python >= 2.6.0
+### Python 2:
 
-##Installation
+Django >= 1.5
+
+Python >= 2.6
+
+### Python 3:
+
+Django >= 1.8
+
+Python >= 3
+
+## Installation
 
 Install using pip:
 
     pip install django-simple-serializer
 
-##Working with django simple serializer
-###Serializing objects
+## Working with django simple serializer
+### Serializing objects
 Assuming that we have django models like these:
 
     class Classification(models.Model):
@@ -52,14 +61,14 @@ data:
 
 By default, the serializer return a list or a dict(for a single object), you can set the parameter “output_type” to decide the serializer return json/xml/list.
 
-##API Guide
+## API Guide
 
-####dss.Serializer
+#### dss.Serializer
 Provides the serializer
 
 *function* serializer(*data, datetime_format='timestamp', output_type='dict', include_attr=None, exclude_attr=None, deep=False*)
 
-####Parameters:
+#### Parameters:
 
 * data(_Required_|(QuerySet, Page, list, django model object))-data to be processed
 * datetime_format(_Optional_|string)-convert datetime into string.default "timestamp"
@@ -69,7 +78,7 @@ Provides the serializer
 * foreign(_Optional_|bool)-determines if serializer serialize ForeignKeyField. default False
 * many(_Optional_|bool)-determines if serializer serialize ManyToManyField. default False
 
-####Usage:  
+#### Usage:
 
 **datetime_format:**  
 
@@ -198,7 +207,7 @@ data:
 
 Serialize ForeignKeyField and its sub item
 
-例子:
+example:
 
     from dss.Serializer import serializer
     article_list = Article.objects.all()
@@ -240,7 +249,7 @@ example:
 
 No test data have ManyToManyField ，data format same as above
 
-####dss.Mixin
+#### dss.Mixin
 Serialize Mixin
 
     class JsonResponseMixin(object)
@@ -250,13 +259,13 @@ Serialize Mixin
         include_attr = None                     # Only serialize the  attrs which in include_attr list。Default is None, accept a tuple contains attrs
         exclude_attr = None                     # serialize exclude attrs in exclude_attr list。Default is None, accept a tuple contains attrs
 
-####Statement:
+#### Statement:
 
 Converts class based view into return json class based view，uses for DetailView and so on.
 
-####Usage:  
+#### Usage:
 
-例子:
+example:
 
     # view.py
     from dss.Mixin import JsonResponseMixin
@@ -308,11 +317,11 @@ response:
 
 *class MultipleJsonResponseMixin(JsonResponseMixin):*
 
-####Statement: 
+#### Statement:
 
 Mixin for ListView to converts it return data into json/xml.
 
-####Usage:  
+#### Usage:
 
 example:
 
@@ -427,13 +436,13 @@ response:
 
 *class FormJsonResponseMixin(JsonResponseMixin):*
 
-####说明:
+#### Statement:
 
 Converts class based view into a return json data class based view，use for CreateView、UpdateView、FormView and so on.
 
-####用法:  
+#### Usage:
 
-例子:
+example:
 
     # view.py
     from dss.Mixin import FormJsonResponseMixin
@@ -502,7 +511,7 @@ response:
         }, 
         "view": ""
     }
-##2.0.0 New Feature:
+## 2.0.0 New Feature:
 Add serialize extra data:
 
 When we want to add extra data in model and serialize it, we can do like this:
@@ -522,22 +531,30 @@ The result will in "comments".
 The extra data can be a normal data type data, an other Django model, dict, list even a QuerySet.
 
 
-##History
+## History
 
-###Current Version：2.0.4
+### Current Version：2.0.6
 
-#####2016.10.27 v2.0.4:
+##### 2017.03.22 v2.0.6:
+
+Add support for Python 3
+
+##### 2017.02.25 v2.0.5:
+
+Add support for Django model trough attribute
+
+##### 2016.10.27 v2.0.4:
 
 Fix issue #2.
  
-#####2016.10.19 v2.0.3:
+##### 2016.10.19 v2.0.3:
 Optimize code.
 
 Fix known bugs.
 
 Fix issue #1
 
-#####2016.6.22 v2.0.2:
+##### 2016.6.22 v2.0.2:
 
 Fix when dev in cbv, if include_attr is not None, MultipleJsonResponseMixin will filter all data.
 
@@ -545,11 +562,11 @@ Fix datetime.datetime and datetime.time was formated as datetime.date
 
 Optimize code.
 
-#####2016.6.14 v2.0.1:
+##### 2016.6.14 v2.0.1:
 
 fix known bugs.
 
-#####2016.6.13 v2.0.0: 
+##### 2016.6.13 v2.0.0:
 
 Rewrite serializer, optimizes serialize time. 
 
@@ -559,22 +576,22 @@ Add serialize support for all Django Field.
 
 New feature: add serialize extra data in model.
 
-#####2015.10.15 v1.0.0: 
+##### 2015.10.15 v1.0.0:
 Refactoring code. 
 
 add cbv json minxin class. 
 
 add serialize support for ManyToManyField.
 
-#####2015.10.12: v0.0.2:  
+##### 2015.10.12: v0.0.2:
 
 Fix bugs.
 
-#####2015.5.23: v0.0.1: 
+##### 2015.5.23: v0.0.1:
 
 First version.
 
-#License
+# License
 
 Copyright © RaPoSpectre.
 

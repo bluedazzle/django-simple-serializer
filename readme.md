@@ -6,36 +6,45 @@
 
 Django Simple Serializer 是一个可以帮助开发者快速将 Django 数据或者 python data 序列化为 json|raw 数据。
 
-##为什么要用 Django Simple Serializer ?
+## 为什么要用 Django Simple Serializer ?
 
 对于序列化 Django 数据的解决方案已经有以下几种：  
 
-###django.core.serializers
+### django.core.serializers
  Django内建序列化器, 它可以序列化Django model query set 但无法直接序列化单独的Django model数据。如果你的model里含有混合数据 , 这个序列化器同样无法使用(如果你想直接使用序列化数据). 除此之外, 如果你想直接把序列化数据返回给用户,显然它包含了很多敏感及对用户无用对信息。
-###QuerySet.values()
+### QuerySet.values()
  和上面一样, QuerySet.values() 同样没法工作如果你的model里有 DateTimeField 或者其他特殊的 Field 以及额外数据。
-###django-rest-framework serializers
+### django-rest-framework serializers
  django-rest-framework 是一个可以帮助你快速构建 REST API 的强力框架。 他拥有完善的序列化器，但在使用之前你需要花费一些时间入门, 并学习 cbv 的开发方式, 对于有时间需求的项目显然这不是最好的解决方案。
-###django simple serializer
+### django simple serializer
 我希望可以快速简单的序列化数据, 所以我设计了一种可以不用任何额外的配置与学习而将Django data 或者 python data 序列化为相应的数据的简单的方式。 这就是为什么我写了 django simple serializer。
 
 django simple serializer 的实际例子: [我的个人网站后台数据接口](https://github.com/bluedazzle/django-vue.js-blog/blob/master/api/views.py "22") 
 
 ----------
 
-##运行需求
+## 运行需求
+
+### Python 2:
+
 Django >= 1.5
 
-Python 2.5 及以上 (暂不支持 python 3)
+Python >= 2.6
 
-##安装
+### Python 3:
+
+Django >= 1.8
+
+Python >= 3
+
+## 安装
 
 Install using pip:
 
     pip install django-simple-serializer
 
-##使用 django simple serializer 进行开发
-###序列化Django data
+## 使用 django simple serializer 进行开发
+### 序列化Django data
 假设我们有以下Django models：
 
     class Classification(models.Model):
@@ -61,14 +70,14 @@ data:
 
 ----------
 
-##API 手册
+## API 手册
 
-####dss.Serializer
+#### dss.Serializer
 提供序列器
 
 *function* serializer(*data, datetime_format='timestamp', output_type='raw', include_attr=None, exclude_attr=None, foreign=False, many=False, through=True*)
 
-####Parameters:
+#### Parameters:
 
 * data(_Required_|(QuerySet, Page, list, django model object))-待处理数据
 * datetime_format(_Optional_|string)-如果包含 datetime 将 datetime 转换成相应格式.默认为 "timestamp"（时间戳）
@@ -79,7 +88,7 @@ data:
 * many(_Optional_|bool)-是否序列化 ManyToManyField 。include_attr 与 exclude_attr 对 ManyToManyField 依旧有效 默认为 False
 * through(_Optional_|bool)-是否序列化 ManyToManyField 中 through 属性数据 默认为 True
 
-####用法:  
+#### 用法:
 
 **datetime_format:**  
 
@@ -251,7 +260,7 @@ example:
 
 测试数据无 ManyToManyField ，数据格式同上
 
-####dss.Mixin
+#### dss.Mixin
 提供序列器 Mixin
 
     class JsonResponseMixin(object)
@@ -262,11 +271,11 @@ example:
         exclude_attr = None                     # 不序列化exclude_attr包含的属性。默认为None,接受一个包含属性名称的tuple
         through = True                          # 序列化 through 属性数据
 
-####说明:
+#### 说明:
 
 将普通class based view 转换为返回json数据的class based view，适用于DetailView等
 
-####用法:  
+#### 用法:
 
 例子:
 
@@ -320,11 +329,11 @@ response:
 
 *class MultipleJsonResponseMixin(JsonResponseMixin):*
 
-####说明: 
+#### 说明:
 
 将列表类视图转换为返回json数据的类视图，适用于ListView等
 
-####用法:  
+#### 用法:
 
 例子:
 
@@ -439,11 +448,11 @@ response:
 
 *class FormJsonResponseMixin(JsonResponseMixin):*
 
-####说明:
+#### 说明:
 
 将普通class based view 转换为返回json数据的class based view，适用于CreateView、UpdateView、FormView等
 
-####用法:  
+#### 用法:
 
 例子:
 
@@ -514,7 +523,7 @@ response:
         }, 
         "view": ""
     }
-##2.0.0 新特点:
+## 2.0.0 新特点:
 增加对额外数据的序列化支持:
 
 当我们想在 model 中加入一些额外的数据并也想被序列化时, 现在可以这样做:
@@ -534,26 +543,30 @@ response:
 额外加入的数据可以是一个普通的数据类型、 另一个 Django model、 字典、 列表甚至 QuerySet
 
 
-##版本历史
+## 版本历史
 
-###当前版本：2.0.5
+### 当前版本：2.0.6
 
-#####2017.02.25 v2.0.5: 
+##### 2017.03.22 v2.0.6:
+
+增加对 Python 3 的支持
+
+##### 2017.02.25 v2.0.5:
 
 增加对 trough 属性支持
 
-#####2016.10.27 v2.0.4:
+##### 2016.10.27 v2.0.4:
 
 修复 issue #2
  
-#####2016.10.19 v2.0.3:
+##### 2016.10.19 v2.0.3:
 优化代码
 
 修复已知 bug
 
 修复 issue #1
 
-#####2016.6.22 v2.0.2:
+##### 2016.6.22 v2.0.2:
 
 修复 cbv 下, 当有 include_attr 参数时, MultipleJsonResponseMixin 中所有数据被过滤的问题 
 
@@ -561,11 +574,11 @@ response:
 
 优化代码
 
-#####2016.6.14 v2.0.1:
+##### 2016.6.14 v2.0.1:
 
 修复发布 bug
 
-#####2016.6.13 v2.0.0: 
+##### 2016.6.13 v2.0.0:
 
 重写 serializer, 优化序列化速度; 
 
@@ -575,22 +588,22 @@ response:
 
 新特性: 增加 model 额外数据的序列化支持
 
-#####2015.10.15 v1.0.0: 
+##### 2015.10.15 v1.0.0:
 重构代码，修复bug； 
 
 增加cbv json minxin 类 ； 
 
 增加对ManyToManyField序列化支持。
 
-#####2015.10.12: v0.0.2:  
+##### 2015.10.12: v0.0.2:
 
 bug修复。
 
-#####2015.5.23: v0.0.1: 
+##### 2015.5.23: v0.0.1:
 
 第一版。
 
-#License
+# License
 
 Copyright © RaPoSpectre.
 
