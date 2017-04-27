@@ -28,7 +28,7 @@ AUTHOR_EMAIL = "rapospectre@gmail.com"
 
 URL = "https://github.com/bluedazzle/django-simple-serializer"
 
-VERSION = "2.0.6"
+VERSION = "2.0.7"
 
 LICENSE = "MIT"
 

@@ -108,7 +108,7 @@ class Serializer(object):
         elif isinstance(data, (datetime.datetime, datetime.date, datetime.time)):
             return self.time_func(data)
         elif isinstance(data, (ImageFieldFile, FileField)):
-            return data.name
+            return data.url if data.url else data.path
         elif isinstance(data, Decimal):
             return float(data)
         elif isinstance(data, dict):
