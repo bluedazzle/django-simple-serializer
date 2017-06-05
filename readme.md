@@ -71,7 +71,7 @@ data:
 
 ## 交流
 
-**扫描二维码，验证信息输入 'dss' 或 '加群' 进入交流群**
+**扫描二维码，验证信息输入 'dss' 或 '加群' 进入微信交流群**
 
 ![screenshot](https://raw.githubusercontent.com/bluedazzle/wechat_sender/master/qr.jpeg)
 
