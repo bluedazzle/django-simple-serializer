@@ -68,6 +68,13 @@ data:
 
 默认情况下, 序列器会返回一个 list 或者 dict(对于单个model实例), 你可以设置参数 “output_type” 来决定序列器返回 json/raw.
 
+
+## 交流
+
+**扫描二维码，验证信息输入 'dss' 或 '加群' 进入交流群**
+
+![screenshot](https://raw.githubusercontent.com/bluedazzle/wechat_sender/master/qr.jpeg)
+
 ----------
 
 ## API 手册
