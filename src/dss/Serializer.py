@@ -74,11 +74,16 @@ class Serializer(object):
             obj_dict = {}
             concrete_model = data._meta.concrete_model
             for field in concrete_model._meta.local_fields:
-                if field.rel is None:
-                    if self.check_attr(field.name) and hasattr(data, field.name):
-                        obj_dict[field.name] = self.data_inspect(getattr(data, field.name))
+                # 检查 field 是否存在 rel 这个属性，为'AutoField' object has no attribute 'rel'错误填坑
+                if hasattr(field, 'rel'):
+                    if field.rel is None:
+                        if self.check_attr(field.name) and hasattr(data, field.name):
+                            obj_dict[field.name] = self.data_inspect(getattr(data, field.name))
+                    else:
+                        if self.check_attr(field.name) and self.foreign:
+                            obj_dict[field.name] = self.data_inspect(getattr(data, field.name))
                 else:
-                    if self.check_attr(field.name) and self.foreign:
+                    if self.check_attr(field.name) and hasattr(data, field.name):
                         obj_dict[field.name] = self.data_inspect(getattr(data, field.name))
             for field in concrete_model._meta.many_to_many:
                 if self.check_attr(field.name) and self.many:
