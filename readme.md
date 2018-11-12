@@ -1,5 +1,6 @@
 # Django Simple Serializer
-# 本項目fork自https://github.com/hengdai/django-simple-serializer修復django建榮信問題
+# 修復django兼容性問題，本項目fork自https://github.com/hengdai/django-simple-serializer
+
 
 ---
 
