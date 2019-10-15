@@ -9,7 +9,7 @@ except ImportError:
 
 
 def read(fname):
-    return codecs.open(os.path.join(os.path.dirname(__file__), fname)).read()
+    return codecs.open(os.path.join(os.path.dirname(__file__), fname),encoding='UTF-8').read()
 
 
 NAME = "django-simple-serializer"
