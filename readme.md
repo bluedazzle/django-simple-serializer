@@ -1,4 +1,6 @@
 # Django Simple Serializer
+# 修復django兼容性問題，本項目fork自https://github.com/bluedazzle/django-simple-serializer
+# 安装：pip install dss-serializer
 
 ---
 
@@ -41,7 +43,7 @@ Python >= 3
 
 Install using pip:
 
-    pip install django-simple-serializer
+    pip install dss-serializer
 
 ## 使用 django simple serializer 进行开发
 ### 序列化Django data

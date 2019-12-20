@@ -74,7 +74,7 @@ class Serializer(object):
             obj_dict = {}
             concrete_model = data._meta.concrete_model
             for field in concrete_model._meta.local_fields:
-                if field.rel is None:
+                if hasattr(field, 'rel') and field.rel is None or hasattr(field, 'remote_field') and field.remote_field is None:
                     if self.check_attr(field.name) and hasattr(data, field.name):
                         obj_dict[field.name] = self.data_inspect(getattr(data, field.name))
                 else:
@@ -89,7 +89,7 @@ class Serializer(object):
             if extra:
                 for field in extra._meta.concrete_model._meta.local_fields:
                     if field.name not in obj_dict.keys() and field.name not in self.through_fields:
-                        if field.rel is None:
+                        if hasattr(field, 'rel') and field.rel is None or hasattr(field, 'remote_field') and field.remote_field is None:
                             if self.check_attr(field.name) and hasattr(extra, field.name):
                                 obj_dict[field.name] = self.data_inspect(getattr(extra, field.name))
                         else:
