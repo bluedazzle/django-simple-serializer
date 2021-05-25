@@ -24,11 +24,11 @@ KEYWORDS = "django serializer"
 
 AUTHOR = "RaPoSpectre"
 
-AUTHOR_EMAIL = "rapospectre@gmail.com"
+AUTHOR_EMAIL = "dealiaxy@gmail.com"
 
-URL = "https://github.com/bluedazzle/django-simple-serializer"
+URL = "https://github.com/Deali-Axy/django-simple-serializer"
 
-VERSION = "2.0.7"
+VERSION = "2.0.8"
 
 LICENSE = "MIT"
 
